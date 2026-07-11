@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your backtest is lying to you — Strategy Audit</title>
+<meta name="description" content="Falsification-first audit of your trading strategy: look-ahead, overfitting, sample power, real costs. Verdicts with evidence in 48h.">
+<!-- ══ CONFIG: edita estas 2 líneas y nada más ══ -->
+<script>
+  const PAY_LINK = "";  // TODO: link de Stripe/Gumroad. Vacío = botón usa email.
+  const CONTACT  = "rgarciarondon@gmail.com";  // TODO: cambiar a email de marca cuando exista
+</script>
+<style>
+  :root{--bg:#fff;--fg:#111;--muted:#555;--line:#e4e4e4;--accent:#0a6cff;--card:#f7f8fa;--bad:#c0392b;--good:#1e8e3e}
+  @media(prefers-color-scheme:dark){:root{--bg:#101214;--fg:#eceff1;--muted:#9aa4ad;--line:#2b3136;--accent:#4d9aff;--card:#1a1e22;--bad:#ff7a68;--good:#5dc97a}}
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--bg);color:var(--fg);font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  main{max-width:720px;margin:0 auto;padding:48px 20px 80px}
+  h1{font-size:clamp(30px,6vw,44px);line-height:1.15;letter-spacing:-.02em}
+  h2{font-size:22px;margin:48px 0 12px}
+  p{margin:14px 0;color:var(--fg)}
+  .sub{color:var(--muted);font-size:19px}
+  .accent{color:var(--accent)}
+  .bad{color:var(--bad);font-weight:600}.good{color:var(--good);font-weight:600}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin:18px 0}
+  table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+  th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{color:var(--muted);font-weight:600}
+  .tablewrap{overflow-x:auto}
+  ul{padding-left:22px}li{margin:8px 0}
+  .cta{display:inline-block;background:var(--accent);color:#fff;border-radius:10px;padding:14px 26px;font-size:18px;font-weight:700;text-decoration:none;margin-top:10px}
+  .cta:hover{filter:brightness(1.1)}
+  .slots{font-size:14px;color:var(--muted);margin-top:8px}
+  .foot{margin-top:64px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+  a{color:var(--accent)}
+  .tag{display:inline-block;font-size:13px;border:1px solid var(--line);border-radius:99px;padding:2px 12px;color:var(--muted);margin-bottom:18px}
+</style>
+</head>
+<body>
+<main>
+  <span class="tag">Falsification-first · evidence or it didn't happen</span>
+  <h1>Your backtest is <span class="accent">lying</span> to you.<br>We prove it.</h1>
+  <p class="sub">A forensic audit of your strategy in 48h: look-ahead bias, overfitting, sample power, real costs. Every finding gets a verdict — <b>CONFIRMED / REFUTED / NOT VERIFIABLE</b> — with the evidence attached. The auditor itself publishes its calibrated false-positive rate.</p>
+
+  <h2>Proof: we audit famous strategies in public</h2>
+  <div class="card">
+    <p><b>YouTube's "Supertrend + EMA200"</b> — 6.5 years of BTCUSDT, 356 trades, honest fills, real costs:</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Metric</th><th>Gross (zero fees)</th><th>Net (0.24% RT)</th></tr></thead>
+      <tbody>
+        <tr><td>Total (compounded)</td><td>+59.7%</td><td class="bad">−32.1%</td></tr>
+        <tr><td>Bootstrap p-value</td><td><b>0.13</b> — noise</td><td>0.66</td></tr>
+        <tr><td>Max drawdown</td><td>−38.8%</td><td class="bad">−64.6%</td></tr>
+        <tr><td>Buy &amp; hold, same window</td><td colspan="2" class="good">+793%</td></tr>
+      </tbody>
+    </table></div>
+    <p style="font-size:15px;color:var(--muted)">The "best parameters" don't even replicate across timeframes — that's noise-mining, demonstrated. Full methodology and code are public: <a href="https://gist.github.com/rgarciarondon-netizen/f9294e20fa1f83a1e654633f1228c986">the audit engine</a>.</p>
+  </div>
+
+  <h2>What you get</h2>
+  <ul>
+    <li><b>Look-ahead / data-leakage check</b> — the #1 silent killer (we found it in our own bots first).</li>
+    <li><b>Statistical honesty</b> — bootstrap significance, deflated expectations, and the answer to "how many trades until this is distinguishable from luck?"</li>
+    <li><b>Real-cost re-run</b> — fees, slippage, funding. Most edges are smaller than their friction.</li>
+    <li><b>Robustness battery</b> — parameter grids, cross-timeframe replication, per-regime breakdown.</li>
+    <li><b>A written verdict per claim</b>, evidence attached. No vibes.</li>
+  </ul>
+
+  <h2>Founders audit — $99</h2>
+  <p>First 10 audits at founders price (regular <s>$249</s>). You send your backtest (trade list or code); you get the full report in 48h. If we can't audit your format, you don't pay.</p>
+  <a class="cta" id="cta" href="#">Get your strategy audited — $99</a>
+  <div class="slots">10 founders slots · report in 48h · replications welcome</div>
+
+  <h2>FAQ</h2>
+  <div class="card"><b>My backtest is profitable. Why audit it?</b><p>So was Supertrend's — until honest fills, real costs and a p-value looked at it. The cheapest time to find out is before your money does.</p></div>
+  <div class="card"><b>What do you need from me?</b><p>Either a trade list (CSV: entries, exits, timestamps) or your strategy rules/code. NDAs welcome; your strategy is never published.</p></div>
+  <div class="card"><b>What if the audit finds nothing wrong?</b><p>Then you get something rarer than a profitable backtest: one that survived a falsification attempt. That's the certificate.</p></div>
+
+  <p class="foot">Built by a systematic trader who spent months falsifying his own bots — and published the teardowns to prove the method. Contact: <a id="mail" href="#">email</a>.</p>
+</main>
+<script>
+  const mail = "mailto:" + CONTACT + "?subject=Founders%20audit";
+  document.getElementById("mail").href = mail;
+  const cta = document.getElementById("cta");
+  cta.href = PAY_LINK || (mail + "&body=I%20want%20a%20founders%20audit.%20My%20strategy%20format%20is%3A%20");
+</script>
+</body>
+</html>
