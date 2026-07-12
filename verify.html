@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Report Verification — BacktestAudit</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#f4f7f9;--card:#fff;--ink:#131a20;--steel:#5a6a76;--line:#d8e0e6;--blue:#0a63f0;--pass:#1e7f4f}
+  @media(prefers-color-scheme:dark){:root{--paper:#0e1418;--card:#151d23;--ink:#e7edf1;--steel:#8fa0ac;--line:#243039;--blue:#5aa0ff;--pass:#54c98a}}
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--paper);color:var(--ink);font:16px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+  main{max-width:760px;margin:0 auto;padding:40px 20px 80px}
+  h1{font:800 26px "Archivo";margin:14px 0 6px}
+  .brand{font:800 17px "Archivo"} .brand .a{color:var(--blue)}
+  .back{color:var(--blue);text-decoration:none;font-weight:600}
+  .muted{color:var(--steel);font-size:14.5px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin:18px 0}
+  .badge{display:inline-block;font:600 12px "IBM Plex Mono";letter-spacing:.15em;color:var(--pass);border:2px solid var(--pass);border-radius:5px;padding:2px 10px}
+  dt{font:600 12px "IBM Plex Mono";letter-spacing:.1em;color:var(--steel);text-transform:uppercase;margin-top:12px}
+  dd{margin:2px 0 0;font:400 13.5px "IBM Plex Mono";word-break:break-all}
+  code{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-size:13px}
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="index.html">← BacktestAudit</a>
+  <p class="brand" style="margin-top:14px">Backtest<span class="a">Audit</span> · REPORT VERIFICATION</p>
+  <h1>Public registry of issued reports</h1>
+  <p class="muted">Every BacktestAudit report is issued with a SHA-256 fingerprint of its full package (report + raw results). If someone shows you a report, hash the files they gave you and compare against this registry. A single changed digit, verdict or number produces a completely different hash — a report that matches here is exactly the report we issued, down to the byte.</p>
+
+  <div class="card" id="SR-2026-001">
+    <span class="badge">VERIFIED ✓</span>
+    <dl>
+      <dt>Report ID</dt><dd>SR-2026-001 (Sample report — two crypto strategies, published with client permission)</dd>
+      <dt>Issued</dt><dd>2026-07-12 · battery v2</dd>
+      <dt>SHA-256 · report (informe_auditoria_bots_v1v2.md)</dt>
+      <dd>2e463b1ff2680bee0aa825da3fcee469770f5b6f0591192067c015a9229572e3</dd>
+      <dt>SHA-256 · raw results (results_bots_both.json)</dt>
+      <dd>a3e1296ea5f560ab29e957b441c93dee1a81ecbb94406a6ddd0acad9fb7bab00</dd>
+      <dt>Battery</dt><dd>honest fills · real costs · bootstrap 10k · MinTRL · Deflated Sharpe · noise test 150 (signals recomputed) · vs-random 500 (matched) · Lo-adjusted Sharpe · SL/TP grid · yearly split</dd>
+      <dt>Reproduce</dt><dd>data: public Binance klines · engine open on <a href="https://gist.github.com/rgarciarondon-netizen/f9294e20fa1f83a1e654633f1228c986">GitHub</a> · check: <code>sha256sum &lt;file&gt;</code></dd>
+    </dl>
+  </div>
+
+  <p class="muted">Client reports appear here as anonymous IDs with hashes only — the content stays private; the fingerprint proves authenticity. Rigor applied to every entry: strategy rules taken from the client's actual code or trade log (never from a description), execution re-simulated honestly, every statistical claim reproducible with published seeds.</p>
+</main>
+</body>
+</html>

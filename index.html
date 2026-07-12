@@ -4,159 +4,301 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BacktestAudit — Your backtest is lying to you</title>
-<meta name="description" content="Falsification-first audit of your trading strategy: look-ahead, overfitting, sample power, real costs. Verdicts with evidence in 48h.">
+<meta name="description" content="Independent falsification-first audits of trading strategies: look-ahead, overfitting, sample power, real costs. Verdicts with evidence in 48h.">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="apple-touch-icon" href="avatar_512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,600..900&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <!-- ══ CONFIG: edita estas 2 líneas y nada más ══ -->
 <script>
   const PAY_LINK = "";  // TODO: link de Stripe/Gumroad. Vacío = botón usa email.
   const CONTACT  = "rgarciarondon@gmail.com";  // TODO: cambiar a email de marca cuando exista
 </script>
 <style>
-  :root{--bg:#fff;--fg:#111;--muted:#555;--line:#e4e4e4;--accent:#0a6cff;--card:#f7f8fa;--bad:#c0392b;--good:#1e8e3e}
-  @media(prefers-color-scheme:dark){:root{--bg:#101214;--fg:#eceff1;--muted:#9aa4ad;--line:#2b3136;--accent:#4d9aff;--card:#1a1e22;--bad:#ff7a68;--good:#5dc97a}}
+  :root{
+    --paper:#f4f7f9; --card:#ffffff; --ink:#131a20; --steel:#5a6a76;
+    --line:#d8e0e6; --blue:#0a63f0; --refute:#c8402e; --pass:#1e7f4f;
+    --chip:#e9eef2;
+  }
+  @media(prefers-color-scheme:dark){:root{
+    --paper:#0e1418; --card:#151d23; --ink:#e7edf1; --steel:#8fa0ac;
+    --line:#243039; --blue:#5aa0ff; --refute:#ff7a63; --pass:#54c98a;
+    --chip:#1b252c;
+  }}
   *{box-sizing:border-box;margin:0}
-  body{background:var(--bg);color:var(--fg);font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-  main{max-width:720px;margin:0 auto;padding:48px 20px 80px}
-  h1{font-size:clamp(30px,6vw,44px);line-height:1.15;letter-spacing:-.02em}
-  h2{font-size:22px;margin:48px 0 12px}
-  p{margin:14px 0;color:var(--fg)}
-  .sub{color:var(--muted);font-size:19px}
-  .accent{color:var(--accent)}
-  .bad{color:var(--bad);font-weight:600}.good{color:var(--good);font-weight:600}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin:18px 0}
-  table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
-  th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line)}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font:16.5px/1.65 "IBM Plex Sans",system-ui,sans-serif}
+  main{max-width:780px;margin:0 auto;padding:28px 20px 90px}
+  ::selection{background:var(--blue);color:#fff}
+
+  /* header */
+  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:52px}
+  .brand{font:800 19px "Archivo";letter-spacing:-.02em}
+  .brand .accent{color:var(--blue)}
+  .langbtn{background:none;border:1px solid var(--line);border-radius:6px;color:var(--steel);
+    font:600 12px "IBM Plex Mono";padding:5px 12px;cursor:pointer;letter-spacing:.08em}
+  .langbtn:hover{color:var(--blue);border-color:var(--blue)}
+
+  /* tipografía dossier */
+  .eyebrow{font:600 12px/1 "IBM Plex Mono";letter-spacing:.22em;text-transform:uppercase;color:var(--steel);margin-bottom:14px}
+  h1{font:900 clamp(34px,7vw,58px)/1.04 "Archivo";letter-spacing:-.025em;text-wrap:balance}
+  h1 .accent{color:var(--blue)}
+  h2{font:800 24px "Archivo";letter-spacing:-.01em;margin:0 0 14px}
+  .sub{color:var(--steel);font-size:19px;margin:20px 0 0;max-width:62ch}
+  .creed{font:800 clamp(19px,3.4vw,24px)/1.35 "Archivo";color:var(--blue);margin:26px 0 0;max-width:30ch;text-wrap:balance}
+
+  section{margin-top:72px}
+
+  /* strip de stats caso */
+  .strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:36px}
+  .chip{background:var(--chip);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+  .chip b{display:block;font:600 20px "IBM Plex Mono";font-variant-numeric:tabular-nums}
+  .chip span{font:400 12.5px "IBM Plex Mono";color:var(--steel)}
+  .chip.bad b{color:var(--refute)} .chip.good b{color:var(--pass)}
+
+  /* exhibit */
+  .exhibit{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 24px;margin-top:18px}
+  .exhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px}
+  .exlabel{font:600 12px "IBM Plex Mono";letter-spacing:.2em;color:var(--steel)}
+  .stamp{font:600 13px "IBM Plex Mono";letter-spacing:.18em;color:var(--refute);
+    border:2.5px solid var(--refute);border-radius:5px;padding:3px 11px;transform:rotate(-5deg);opacity:.9}
+  .extitle{font:600 17px "IBM Plex Sans";margin:4px 0 14px}
+  .chart{width:100%;height:auto;display:block;margin:4px 0 10px}
+  .chart .lbl{font:600 11px "IBM Plex Mono";fill:var(--steel)}
+  .chart .lbl.bad{fill:var(--refute)} .chart .lbl.good{fill:var(--pass)}
+  @media(prefers-reduced-motion:no-preference){
+    .chart polyline{stroke-dasharray:1600;stroke-dashoffset:1600;animation:draw 2.2s ease-out forwards}
+    .chart polyline:nth-of-type(2){animation-delay:.35s}
+  }
+  @keyframes draw{to{stroke-dashoffset:0}}
+  table{border-collapse:collapse;width:100%;font-size:14.5px;margin:8px 0}
+  th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
   th:first-child,td:first-child{text-align:left}
-  thead th{color:var(--muted);font-weight:600}
+  thead th{color:var(--steel);font:600 12px "IBM Plex Mono";letter-spacing:.06em;text-transform:uppercase}
   .tablewrap{overflow-x:auto}
-  ul{padding-left:22px}li{margin:8px 0}
-  .cta{display:inline-block;background:var(--accent);color:#fff;border-radius:10px;padding:14px 26px;font-size:18px;font-weight:700;text-decoration:none;margin-top:10px}
-  .cta:hover{filter:brightness(1.1)}
-  .slots{font-size:14px;color:var(--muted);margin-top:8px}
-  .foot{margin-top:64px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
-  a{color:var(--accent)}
-  .tag{display:inline-block;font-size:13px;border:1px solid var(--line);border-radius:99px;padding:2px 12px;color:var(--muted);margin-bottom:18px}
-  .creed{font-size:20px;font-weight:700;color:var(--accent);border-left:4px solid var(--accent);padding-left:14px;margin:22px 0 6px}
-  .langbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-  .brand{font-weight:800;font-size:17px;letter-spacing:-.01em}
-  .brand .accent{font-weight:800}
-  .langbtn{background:none;border:1px solid var(--line);border-radius:99px;color:var(--muted);font:600 13px system-ui;padding:4px 12px;cursor:pointer}
-  .langbtn:hover{color:var(--accent);border-color:var(--accent)}
+  .bad{color:var(--refute);font-weight:600}.good{color:var(--pass);font-weight:600}
+  .exfoot{font-size:14px;color:var(--steel);margin-top:8px}
+  .samplelink{display:inline-block;font:600 15px "IBM Plex Sans";color:var(--blue);text-decoration:none;margin-top:12px}
+  .samplelink:hover{text-decoration:underline}
+
+  /* método */
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+  .step i{font:600 12px "IBM Plex Mono";color:var(--blue);letter-spacing:.15em;font-style:normal}
+  .step b{display:block;font:800 17px "Archivo";margin:8px 0 6px}
+  .step p{font-size:14.5px;color:var(--steel)}
+
+  /* qué recibes */
+  ul.get{list-style:none;padding:0;display:grid;gap:10px}
+  ul.get li{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 16px;font-size:15.5px}
+  ul.get li::before{content:"▸";color:var(--blue);font-weight:700;margin-right:10px}
+
+  /* oferta */
+  .offer{background:var(--ink);color:var(--paper);border-radius:14px;padding:30px 28px;margin-top:16px}
+  @media(prefers-color-scheme:dark){.offer{background:var(--card);color:var(--ink);border:1px solid var(--line)}}
+  .price{font:900 44px "Archivo";letter-spacing:-.02em}
+  .price s{font:600 22px "IBM Plex Mono";opacity:.55;margin-left:10px}
+  .offer p{opacity:.85;max-width:58ch}
+  .cta{display:inline-block;background:var(--blue);color:#fff;border-radius:9px;padding:15px 28px;
+    font:700 17px "IBM Plex Sans";text-decoration:none;margin-top:16px;transition:transform .12s}
+  .cta:hover{transform:translateY(-2px)}
+  .slots{font:400 12.5px "IBM Plex Mono";opacity:.7;margin-top:10px}
+
+  /* faq + refs */
+  .qa{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:10px 0}
+  .qa b{font:600 16px "IBM Plex Sans"}
+  .qa p{color:var(--steel);font-size:15px;margin-top:6px}
+  .refs{font-size:14px;color:var(--steel)}
+  .refs li{margin:7px 0}
+  a{color:var(--blue)}
+  footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);color:var(--steel);font-size:14px}
 </style>
 </head>
 <body>
 <main>
-  <div class="langbar"><span class="brand">Backtest<span class="accent">Audit</span></span><button class="langbtn" id="langbtn" onclick="toggleLang()">ES</button></div>
-  <span class="tag" data-i18n="tag"></span>
+  <header>
+    <span class="brand">Backtest<span class="accent">Audit</span></span>
+    <button class="langbtn" id="langbtn" onclick="toggleLang()">ES</button>
+  </header>
+
+  <p class="eyebrow" data-i18n="eyebrow"></p>
   <h1 data-i18n="h1"></h1>
   <p class="sub" data-i18n="sub"></p>
   <p class="creed" data-i18n="creed"></p>
 
-  <h2 data-i18n="proof_h"></h2>
-  <div class="card">
-    <p data-i18n="proof_intro"></p>
-    <div class="tablewrap"><table>
-      <thead><tr><th data-i18n="t_metric"></th><th data-i18n="t_gross"></th><th data-i18n="t_net"></th></tr></thead>
-      <tbody>
-        <tr><td data-i18n="t_total"></td><td>+59.7%</td><td class="bad">−32.1%</td></tr>
-        <tr><td data-i18n="t_pval"></td><td data-i18n="t_pval_g"></td><td>0.66</td></tr>
-        <tr><td data-i18n="t_dd"></td><td>−38.8%</td><td class="bad">−64.6%</td></tr>
-        <tr><td data-i18n="t_bh"></td><td colspan="2" class="good">+793%</td></tr>
-      </tbody>
-    </table></div>
-    <p style="font-size:15px;color:var(--muted)" data-i18n="proof_note"></p>
-    <p><a href="sample-report.html" style="font-weight:700" data-i18n="sample_link"></a></p>
+  <div class="strip">
+    <div class="chip"><b>356</b><span data-i18n="c1"></span></div>
+    <div class="chip"><b>p = 0.13</b><span data-i18n="c2"></span></div>
+    <div class="chip bad"><b>−32.1%</b><span data-i18n="c3"></span></div>
+    <div class="chip good"><b>+793%</b><span data-i18n="c4"></span></div>
   </div>
 
-  <h2 data-i18n="get_h"></h2>
-  <ul>
-    <li data-i18n="get_1"></li>
-    <li data-i18n="get_2"></li>
-    <li data-i18n="get_3"></li>
-    <li data-i18n="get_4"></li>
-    <li data-i18n="get_5"></li>
-  </ul>
+  <section>
+    <div class="exhibit">
+      <div class="exhead"><span class="exlabel" data-i18n="exlabel"></span><span class="stamp">REFUTED</span></div>
+      <p class="extitle" data-i18n="extitle"></p>
+      <svg class="chart" viewBox="0 0 640 240" role="img" aria-label="Equity: strategy vs buy and hold (log scale)">
+        <line x1="8" y1="194" x2="632" y2="194" stroke="var(--line)" stroke-dasharray="4 4"/>
+        <text class="lbl" x="10" y="188">100</text>
+        <polyline fill="none" stroke="var(--pass)" stroke-width="2" points="8,177 16,183 24,201 32,182 40,176 48,178 56,165 64,163 72,168 80,152 88,129 96,104 104,95 112,75 120,58 128,59 136,88 144,91 152,81 160,72 168,77 176,55 184,60 192,74 200,85 208,78 216,75 224,87 232,98 240,128 248,118 256,128 264,130 272,126 280,138 288,140 296,118 304,118 312,105 320,103 328,108 336,101 344,103 352,111 360,108 368,92 376,87 384,79 392,79 400,55 408,46 416,56 424,49 432,54 440,52 448,58 456,53 464,46 472,26 480,28 488,22 496,35 504,36 512,28 520,21 528,19 536,14 544,19 552,15 560,18 568,30 576,32 584,39 592,50 600,48 608,41 616,43 624,58 632,52"/>
+        <polyline fill="none" stroke="var(--refute)" stroke-width="2.5" points="8,192 16,195 24,194 32,186 40,180 48,181 56,182 64,180 72,181 80,180 88,178 96,176 104,182 112,170 120,166 128,161 136,175 144,170 152,173 160,172 168,170 176,160 184,161 192,165 200,166 208,169 216,166 224,171 232,173 240,177 248,179 256,185 264,185 272,184 280,182 288,180 296,181 304,184 312,185 320,190 328,191 336,193 344,190 352,190 360,192 368,192 376,190 384,193 392,195 400,195 408,198 416,198 424,199 432,202 440,199 448,195 456,190 464,189 472,194 480,193 488,200 496,200 504,202 512,207 520,206 528,209 536,211 544,209 552,211 560,215 568,217 576,225 584,223 592,224 600,221 608,216 616,216 624,219 632,219"/>
+        <circle cx="632" cy="52" r="3.5" fill="var(--pass)"/>
+        <circle cx="632" cy="219" r="3.5" fill="var(--refute)"/>
+        <text class="lbl good" x="628" y="40" text-anchor="end" data-i18n="lbl_bh"></text>
+        <text class="lbl bad" x="628" y="234" text-anchor="end" data-i18n="lbl_eq"></text>
+      </svg>
+      <div class="tablewrap"><table>
+        <thead><tr><th data-i18n="t_metric"></th><th data-i18n="t_gross"></th><th data-i18n="t_net"></th></tr></thead>
+        <tbody>
+          <tr><td data-i18n="t_total"></td><td>+59.7%</td><td class="bad">−32.1%</td></tr>
+          <tr><td data-i18n="t_pval"></td><td data-i18n="t_pval_g"></td><td>0.66</td></tr>
+          <tr><td data-i18n="t_dd"></td><td>−38.8%</td><td class="bad">−64.6%</td></tr>
+        </tbody>
+      </table></div>
+      <p class="exfoot" data-i18n="proof_note"></p>
+      <a class="samplelink" href="sample-report.html" data-i18n="sample_link"></a>
+    </div>
+  </section>
 
-  <h2 data-i18n="offer_h"></h2>
-  <p data-i18n="offer_p"></p>
-  <a class="cta" id="cta" href="#" data-i18n="cta"></a>
-  <div class="slots" data-i18n="slots"></div>
+  <section>
+    <p class="eyebrow" data-i18n="m_eyebrow"></p>
+    <h2 data-i18n="m_h"></h2>
+    <div class="steps">
+      <div class="step"><i>01</i><b data-i18n="m1_t"></b><p data-i18n="m1_p"></p></div>
+      <div class="step"><i>02</i><b data-i18n="m2_t"></b><p data-i18n="m2_p"></p></div>
+      <div class="step"><i>03</i><b data-i18n="m3_t"></b><p data-i18n="m3_p"></p></div>
+    </div>
+  </section>
 
-  <h2>FAQ</h2>
-  <div class="card"><b data-i18n="faq1_q"></b><p data-i18n="faq1_a"></p></div>
-  <div class="card"><b data-i18n="faq2_q"></b><p data-i18n="faq2_a"></p></div>
-  <div class="card"><b data-i18n="faq3_q"></b><p data-i18n="faq3_a"></p></div>
+  <section>
+    <p class="eyebrow" data-i18n="g_eyebrow"></p>
+    <h2 data-i18n="get_h"></h2>
+    <ul class="get">
+      <li data-i18n="get_1"></li>
+      <li data-i18n="get_2"></li>
+      <li data-i18n="get_3"></li>
+      <li data-i18n="get_4"></li>
+      <li data-i18n="get_5"></li>
+    </ul>
+  </section>
 
-  <p class="foot"><span data-i18n="foot"></span> <a id="mail" href="#" data-i18n="foot_mail"></a>.</p>
+  <section>
+    <p class="eyebrow" data-i18n="o_eyebrow"></p>
+    <div class="offer">
+      <div class="price">$99 <s>$249</s></div>
+      <p data-i18n="offer_p"></p>
+      <a class="cta" id="cta" href="#" data-i18n="cta"></a>
+      <div class="slots" data-i18n="slots"></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">FAQ</p>
+    <div class="qa"><b data-i18n="faq1_q"></b><p data-i18n="faq1_a"></p></div>
+    <div class="qa"><b data-i18n="faq2_q"></b><p data-i18n="faq2_a"></p></div>
+    <div class="qa"><b data-i18n="faq3_q"></b><p data-i18n="faq3_a"></p></div>
+  </section>
+
+  <section>
+    <p class="eyebrow" data-i18n="r_eyebrow"></p>
+    <ul class="refs">
+      <li>Bailey &amp; López de Prado — <i>The Deflated Sharpe Ratio</i> (J. Portfolio Mgmt, 2014) · <i>The Probability of Backtest Overfitting</i> (J. Computational Finance, 2015)</li>
+      <li>Lo — <i>The Statistics of Sharpe Ratios</i> (FAJ, 2002)</li>
+      <li data-i18n="r_gist"></li>
+      <li data-i18n="r_sample"></li>
+    </ul>
+  </section>
+
+  <footer>
+    <span data-i18n="foot"></span> <a id="mail" href="#" data-i18n="foot_mail"></a>.
+  </footer>
 </main>
 <script>
 const GIST = "https://gist.github.com/rgarciarondon-netizen/f9294e20fa1f83a1e654633f1228c986";
 const I18N = {
 en: {
   _title: "BacktestAudit — Your backtest is lying to you",
-  _desc: "Falsification-first audit of your trading strategy: look-ahead, overfitting, sample power, real costs. Verdicts with evidence in 48h.",
-  tag: "Falsification-first · evidence or it didn't happen",
-  h1: 'Your backtest is <span class="accent">lying</span> to you.<br>We prove it.',
-  sub: "A forensic audit of your strategy in 48h: look-ahead bias, overfitting, sample power, real costs. Every finding gets a verdict — <b>CONFIRMED / REFUTED / NOT VERIFIABLE</b> — with the evidence attached. The auditor itself publishes its calibrated false-positive rate.",
+  _desc: "Independent falsification-first audits of trading strategies: look-ahead, overfitting, sample power, real costs. Verdicts with evidence in 48h.",
+  eyebrow: "Independent backtest audits · falsification-first",
+  h1: 'Your backtest is <span class="accent">lying</span> to you. We prove it.',
+  sub: "A forensic audit of your strategy in 48h: look-ahead bias, overfitting, sample power, real costs. Every finding gets a verdict — CONFIRMED / REFUTED / NOT VERIFIABLE — with the evidence attached.",
   creed: "We don't sell you strategies — that's why we can tell you the truth about yours.",
-  proof_h: "Proof: we audit famous strategies in public",
-  proof_intro: "<b>YouTube's \"Supertrend + EMA200\"</b> — 6.5 years of BTCUSDT, 356 trades, honest fills, real costs:",
+  c1: "trades audited", c2: "gross significance — noise", c3: "net, after real costs", c4: "buy & hold, same window",
+  exlabel: "EXHIBIT A · CASE 2026-ST-01",
+  extitle: "YouTube's \"Supertrend + EMA200\" — 6.5 years of BTCUSDT, honest fills, real costs. Log scale, indexed to 100.",
+  lbl_bh: "Buy & hold +793%", lbl_eq: "Strategy, net −32%",
   t_metric: "Metric", t_gross: "Gross (zero fees)", t_net: "Net (0.24% RT)",
-  t_total: "Total (compounded)", t_pval: "Bootstrap p-value", t_pval_g: "<b>0.13</b> — noise",
-  t_dd: "Max drawdown", t_bh: "Buy & hold, same window",
-  proof_note: 'The "best parameters" don\'t even replicate across timeframes — that\'s noise-mining, demonstrated. Full methodology and code are public: <a href="'+GIST+'">the audit engine</a>.',
+  t_total: "Total (compounded)", t_pval: "Bootstrap p-value", t_pval_g: "0.13 — noise",
+  t_dd: "Max drawdown",
+  proof_note: 'The "best parameters" don\'t replicate across timeframes — noise-mining, demonstrated. Methodology and code are public.',
   sample_link: "Read a full sample report — our own bots, audited and refuted →",
-  get_h: "What you get",
+  m_eyebrow: "The method", m_h: "Three steps, no vibes",
+  m1_t: "You send", m1_p: "A trade list (CSV) or your strategy rules/code. NDAs welcome — client strategies are never published.",
+  m2_t: "We falsify", m2_p: "Honest re-execution, real costs, leakage checks, noise & vs-random tests, Deflated Sharpe, minimum track record length.",
+  m3_t: "You get verdicts", m3_p: "A written report: score 0–100 with a published formula, one verdict per claim, evidence attached, fully reproducible.",
+  g_eyebrow: "The deliverable", get_h: "What you get",
   get_1: "<b>Look-ahead / data-leakage check</b> — the #1 silent killer (we found it in our own bots first).",
-  get_2: "<b>Statistical honesty</b> — bootstrap significance, deflated expectations, and the answer to \"how many trades until this is distinguishable from luck?\"",
+  get_2: "<b>Statistical honesty</b> — bootstrap significance, deflated expectations, and how many trades until your result is distinguishable from luck.",
   get_3: "<b>Real-cost re-run</b> — fees, slippage, funding. Most edges are smaller than their friction.",
-  get_4: "<b>Robustness battery</b> — parameter grids, cross-timeframe replication, per-regime breakdown.",
-  get_5: "<b>A written verdict per claim</b>, evidence attached. No vibes.",
-  offer_h: "Founders audit — $99",
-  offer_p: "First 10 audits at founders price (regular <s>$249</s>). You send your backtest (trade list or code); you get the full report in 48h. If we can't audit your format, you don't pay.",
+  get_4: "<b>Robustness battery</b> — noise tests, vs-random benchmarks, parameter grids, cross-timeframe replication, per-regime breakdown.",
+  get_5: "<b>A written verdict per claim</b>, evidence attached — plus a QR-verifiable report hash.",
+  o_eyebrow: "Founders offer",
+  offer_p: "First 10 audits at founders price. You send your backtest; you get the full report in 48h. If we can't audit your format, you don't pay.",
   cta: "Get your strategy audited — $99",
   slots: "10 founders slots · report in 48h · replications welcome",
   faq1_q: "My backtest is profitable. Why audit it?",
   faq1_a: "So was Supertrend's — until honest fills, real costs and a p-value looked at it. The cheapest time to find out is before your money does.",
   faq2_q: "What do you need from me?",
-  faq2_a: "Either a trade list (CSV: entries, exits, timestamps) or your strategy rules/code. NDAs welcome; your strategy is never published.",
+  faq2_a: "Either a trade list (CSV: entries, exits, timestamps) or your strategy rules/code. Your strategy is never published.",
   faq3_q: "What if the audit finds nothing wrong?",
   faq3_a: "Then you get something rarer than a profitable backtest: one that survived a falsification attempt. That's the certificate.",
+  r_eyebrow: "References & support",
+  r_gist: 'The audit engine, open for replication: <a href="'+GIST+'">code on GitHub</a>',
+  r_sample: 'Full sample report: <a href="sample-report.html">our own bots, audited</a> — verdicts, evidence, reproducibility, QR verification',
   foot: "<b>BacktestAudit</b> — built by a systematic trader who spent months falsifying his own bots, and published the teardowns to prove the method. Contact:",
   foot_mail: "email",
   _mailsub: "Founders audit", _mailbody: "I want a founders audit. My strategy format is: "
 },
 es: {
   _title: "BacktestAudit — Tu backtest te está mintiendo",
-  _desc: "Auditoría de falsificación de tu estrategia de trading: look-ahead, overfitting, poder de muestra, costes reales. Veredictos con evidencia en 48h.",
-  tag: "Falsificación primero · evidencia o no ocurrió",
-  h1: 'Tu backtest te está <span class="accent">mintiendo</span>.<br>Te lo demostramos.',
-  sub: "Auditoría forense de tu estrategia en 48h: sesgo de look-ahead, overfitting, poder de muestra, costes reales. Cada hallazgo recibe un veredicto — <b>CONFIRMADO / REFUTADO / NO VERIFICABLE</b> — con la evidencia adjunta. El propio auditor publica su tasa de falsos positivos calibrada.",
+  _desc: "Auditorías independientes de estrategias de trading, falsificación primero: look-ahead, overfitting, poder de muestra, costes reales. Veredictos con evidencia en 48h.",
+  eyebrow: "Auditorías independientes de backtests · falsificación primero",
+  h1: 'Tu backtest te está <span class="accent">mintiendo</span>. Te lo demostramos.',
+  sub: "Auditoría forense de tu estrategia en 48h: sesgo de look-ahead, overfitting, poder de muestra, costes reales. Cada hallazgo recibe un veredicto — CONFIRMADO / REFUTADO / NO VERIFICABLE — con la evidencia adjunta.",
   creed: "No te vendemos la estrategia — por eso podemos decirte la verdad sobre la tuya.",
-  proof_h: "Prueba: auditamos estrategias famosas en público",
-  proof_intro: "<b>La \"Supertrend + EMA200\" de YouTube</b> — 6.5 años de BTCUSDT, 356 trades, ejecución honesta, costes reales:",
+  c1: "trades auditados", c2: "significancia bruta — ruido", c3: "neto, con costes reales", c4: "comprar y holdear, mismo período",
+  exlabel: "PRUEBA A · CASO 2026-ST-01",
+  extitle: "La \"Supertrend + EMA200\" de YouTube — 6.5 años de BTCUSDT, ejecución honesta, costes reales. Escala log, indexado a 100.",
+  lbl_bh: "Buy & hold +793%", lbl_eq: "Estrategia, neto −32%",
   t_metric: "Métrica", t_gross: "Bruto (sin comisiones)", t_net: "Neto (0.24% i/v)",
-  t_total: "Total (compuesto)", t_pval: "p-valor (bootstrap)", t_pval_g: "<b>0.13</b> — ruido",
-  t_dd: "Drawdown máximo", t_bh: "Comprar y holdear, mismo período",
-  proof_note: 'Los "mejores parámetros" ni siquiera se replican entre timeframes — eso es minería de ruido, demostrada. Metodología y código públicos: <a href="'+GIST+'">el motor de auditoría</a>.',
+  t_total: "Total (compuesto)", t_pval: "p-valor (bootstrap)", t_pval_g: "0.13 — ruido",
+  t_dd: "Drawdown máximo",
+  proof_note: 'Los "mejores parámetros" no se replican entre timeframes — minería de ruido, demostrada. Metodología y código públicos.',
   sample_link: "Lee un informe de muestra completo — nuestros propios bots, auditados y refutados →",
-  get_h: "Qué recibes",
+  m_eyebrow: "El método", m_h: "Tres pasos, sin sensaciones",
+  m1_t: "Envías", m1_p: "Lista de trades (CSV) o las reglas/código de tu estrategia. NDAs bienvenidos — las estrategias de clientes jamás se publican.",
+  m2_t: "Falsificamos", m2_p: "Re-ejecución honesta, costes reales, chequeos de leakage, noise test y vs-random, Deflated Sharpe, longitud mínima de track record.",
+  m3_t: "Recibes veredictos", m3_p: "Informe escrito: score 0-100 con fórmula publicada, un veredicto por afirmación, evidencia adjunta, reproducible por completo.",
+  g_eyebrow: "El entregable", get_h: "Qué recibes",
   get_1: "<b>Chequeo de look-ahead / fuga de datos</b> — el asesino silencioso #1 (lo encontramos primero en nuestros propios bots).",
-  get_2: "<b>Honestidad estadística</b> — significancia por bootstrap, expectativas defladas, y la respuesta a \"¿cuántos trades hacen falta para distinguir esto de la suerte?\"",
+  get_2: "<b>Honestidad estadística</b> — significancia por bootstrap, expectativas defladas, y cuántos trades faltan para distinguir tu resultado de la suerte.",
   get_3: "<b>Re-cálculo con costes reales</b> — comisiones, slippage, funding. La mayoría de los edges son más pequeños que su fricción.",
-  get_4: "<b>Batería de robustez</b> — grids de parámetros, réplica entre timeframes, desglose por régimen.",
-  get_5: "<b>Un veredicto escrito por afirmación</b>, con evidencia adjunta. Sin sensaciones.",
-  offer_h: "Auditoría fundadores — $99",
-  offer_p: "Primeras 10 auditorías a precio fundadores (normal <s>$249</s>). Envías tu backtest (lista de trades o código); recibes el informe completo en 48h. Si no podemos auditar tu formato, no pagas.",
+  get_4: "<b>Batería de robustez</b> — noise tests, benchmarks vs-random, grids de parámetros, réplica entre timeframes, desglose por régimen.",
+  get_5: "<b>Un veredicto escrito por afirmación</b>, con evidencia — más hash del informe verificable por QR.",
+  o_eyebrow: "Oferta fundadores",
+  offer_p: "Primeras 10 auditorías a precio fundadores. Envías tu backtest; recibes el informe completo en 48h. Si no podemos auditar tu formato, no pagas.",
   cta: "Audita tu estrategia — $99",
   slots: "10 cupos fundadores · informe en 48h · réplicas bienvenidas",
   faq1_q: "Mi backtest es rentable. ¿Para qué auditarlo?",
   faq1_a: "El de Supertrend también lo era — hasta que la ejecución honesta, los costes reales y un p-valor lo miraron. El momento más barato para descubrirlo es antes que tu dinero.",
   faq2_q: "¿Qué necesitas de mí?",
-  faq2_a: "Una lista de trades (CSV: entradas, salidas, timestamps) o las reglas/código de tu estrategia. NDAs bienvenidos; tu estrategia jamás se publica.",
+  faq2_a: "Una lista de trades (CSV: entradas, salidas, timestamps) o las reglas/código de tu estrategia. Tu estrategia jamás se publica.",
   faq3_q: "¿Y si la auditoría no encuentra nada malo?",
   faq3_a: "Entonces obtienes algo más raro que un backtest rentable: uno que sobrevivió un intento de falsificación. Ese es el certificado.",
+  r_eyebrow: "Referencias y soporte",
+  r_gist: 'El motor de auditoría, abierto para réplica: <a href="'+GIST+'">código en GitHub</a>',
+  r_sample: 'Informe de muestra completo: <a href="sample-report.html">nuestros propios bots, auditados</a> — veredictos, evidencia, reproducibilidad, verificación QR',
   foot: "<b>BacktestAudit</b> — construido por un trader sistemático que pasó meses falsificando sus propios bots, y publicó los teardowns para demostrar el método. Contacto:",
   foot_mail: "email",
   _mailsub: "Auditoría fundadores", _mailbody: "Quiero una auditoría fundadores. El formato de mi estrategia es: "
