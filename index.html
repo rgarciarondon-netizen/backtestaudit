@@ -29,7 +29,9 @@
   *{box-sizing:border-box;margin:0}
   html{scroll-behavior:smooth}
   body{background:var(--paper);color:var(--ink);font:16.5px/1.65 "IBM Plex Sans",system-ui,sans-serif}
-  main{max-width:780px;margin:0 auto;padding:28px 20px 90px}
+  main{max-width:1140px;margin:0 auto;padding:28px 24px 90px}
+  .hero{display:grid;grid-template-columns:1.45fr 1fr;gap:24px 56px;align-items:center}
+  @media(max-width:900px){.hero{grid-template-columns:1fr}}
   ::selection{background:var(--blue);color:#fff}
 
   /* header */
@@ -46,14 +48,15 @@
   h1 .accent{color:var(--blue)}
   h2{font:800 24px "Archivo";letter-spacing:-.01em;margin:0 0 14px}
   .sub{color:var(--steel);font-size:19px;margin:20px 0 0;max-width:62ch}
-  .creed{font:800 clamp(15px,2.4vw,20px)/1.4 "Archivo";color:var(--blue);margin:26px 0 0;text-wrap:balance}
-  @media(min-width:700px){.creed{white-space:nowrap}}
+  .creed{font:800 clamp(15px,1.85vw,21px)/1.4 "Archivo";color:var(--blue);margin:30px 0 0;text-wrap:balance}
+  @media(min-width:760px){.creed{white-space:nowrap}}
 
   section{margin-top:72px}
 
-  /* strip de stats caso */
-  .strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:36px}
-  .chip{background:var(--chip);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+  /* strip de stats caso (panel 2x2 en el hero) */
+  .strip{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:900px){.strip{margin-top:26px}}
+  .chip{background:var(--chip);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
   .chip b{display:block;font:600 20px "IBM Plex Mono";font-variant-numeric:tabular-nums}
   .chip span{font:400 12.5px "IBM Plex Mono";color:var(--steel)}
   .chip.bad b{color:var(--refute)} .chip.good b{color:var(--pass)}
@@ -92,6 +95,9 @@
 
   /* qué recibes */
   ul.get{list-style:none;padding:0;display:grid;gap:10px}
+  @media(min-width:800px){ul.get{grid-template-columns:1fr 1fr}}
+  .faqgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+  .faqgrid .qa{margin:0}
   ul.get li{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 16px;font-size:15.5px}
   ul.get li::before{content:"▸";color:var(--blue);font-weight:700;margin-right:10px}
 
@@ -126,17 +132,20 @@
     <button class="langbtn" id="langbtn" onclick="toggleLang()">ES</button>
   </header>
 
-  <p class="eyebrow" data-i18n="eyebrow"></p>
-  <h1 data-i18n="h1"></h1>
-  <p class="sub" data-i18n="sub"></p>
-  <p class="creed" data-i18n="creed"></p>
-
-  <div class="strip">
-    <div class="chip"><b>356</b><span data-i18n="c1"></span></div>
-    <div class="chip"><b>p = 0.13</b><span data-i18n="c2"></span></div>
-    <div class="chip bad"><b>−32.1%</b><span data-i18n="c3"></span></div>
-    <div class="chip good"><b>+793%</b><span data-i18n="c4"></span></div>
+  <div class="hero">
+    <div>
+      <p class="eyebrow" data-i18n="eyebrow"></p>
+      <h1 data-i18n="h1"></h1>
+      <p class="sub" data-i18n="sub"></p>
+    </div>
+    <div class="strip">
+      <div class="chip"><b>356</b><span data-i18n="c1"></span></div>
+      <div class="chip"><b>p = 0.13</b><span data-i18n="c2"></span></div>
+      <div class="chip bad"><b>−32.1%</b><span data-i18n="c3"></span></div>
+      <div class="chip good"><b>+793%</b><span data-i18n="c4"></span></div>
+    </div>
   </div>
+  <p class="creed" data-i18n="creed"></p>
 
   <section>
     <div class="exhibit">
@@ -203,9 +212,11 @@
 
   <section>
     <p class="eyebrow">FAQ</p>
-    <div class="qa"><b data-i18n="faq1_q"></b><p data-i18n="faq1_a"></p></div>
-    <div class="qa"><b data-i18n="faq2_q"></b><p data-i18n="faq2_a"></p></div>
-    <div class="qa"><b data-i18n="faq3_q"></b><p data-i18n="faq3_a"></p></div>
+    <div class="faqgrid">
+      <div class="qa"><b data-i18n="faq1_q"></b><p data-i18n="faq1_a"></p></div>
+      <div class="qa"><b data-i18n="faq2_q"></b><p data-i18n="faq2_a"></p></div>
+      <div class="qa"><b data-i18n="faq3_q"></b><p data-i18n="faq3_a"></p></div>
+    </div>
   </section>
 
   <section>
