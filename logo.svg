@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 64" role="img" aria-label="BacktestAudit">
+  <!-- icono -->
+  <rect x="2" y="8" width="48" height="48" rx="11" fill="#0a6cff"/>
+  <rect x="14" y="23" width="8" height="18" rx="1.5" fill="#fff" opacity=".92"/>
+  <rect x="17" y="17" width="2" height="6" fill="#fff" opacity=".92"/>
+  <rect x="17" y="41" width="2" height="6" fill="#fff" opacity=".92"/>
+  <path d="M26 35 L31.5 41 L41 26" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- wordmark (dos tonos); currentColor hereda del contexto: negro en fondo claro, blanco en oscuro -->
+  <text x="60" y="45" font-family="DejaVu Sans, Segoe UI, Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="-0.5">
+    <tspan fill="currentColor">Backtest</tspan><tspan fill="#0a6cff">Audit</tspan>
+  </text>
+</svg>
