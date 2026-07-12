@@ -35,55 +35,146 @@
   .foot{margin-top:64px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
   a{color:var(--accent)}
   .tag{display:inline-block;font-size:13px;border:1px solid var(--line);border-radius:99px;padding:2px 12px;color:var(--muted);margin-bottom:18px}
+  .langbar{display:flex;justify-content:flex-end;margin-bottom:8px}
+  .langbtn{background:none;border:1px solid var(--line);border-radius:99px;color:var(--muted);font:600 13px system-ui;padding:4px 12px;cursor:pointer}
+  .langbtn:hover{color:var(--accent);border-color:var(--accent)}
 </style>
 </head>
 <body>
 <main>
-  <span class="tag">Falsification-first · evidence or it didn't happen</span>
-  <h1>Your backtest is <span class="accent">lying</span> to you.<br>We prove it.</h1>
-  <p class="sub">A forensic audit of your strategy in 48h: look-ahead bias, overfitting, sample power, real costs. Every finding gets a verdict — <b>CONFIRMED / REFUTED / NOT VERIFIABLE</b> — with the evidence attached. The auditor itself publishes its calibrated false-positive rate.</p>
+  <div class="langbar"><button class="langbtn" id="langbtn" onclick="toggleLang()">ES</button></div>
+  <span class="tag" data-i18n="tag"></span>
+  <h1 data-i18n="h1"></h1>
+  <p class="sub" data-i18n="sub"></p>
 
-  <h2>Proof: we audit famous strategies in public</h2>
+  <h2 data-i18n="proof_h"></h2>
   <div class="card">
-    <p><b>YouTube's "Supertrend + EMA200"</b> — 6.5 years of BTCUSDT, 356 trades, honest fills, real costs:</p>
+    <p data-i18n="proof_intro"></p>
     <div class="tablewrap"><table>
-      <thead><tr><th>Metric</th><th>Gross (zero fees)</th><th>Net (0.24% RT)</th></tr></thead>
+      <thead><tr><th data-i18n="t_metric"></th><th data-i18n="t_gross"></th><th data-i18n="t_net"></th></tr></thead>
       <tbody>
-        <tr><td>Total (compounded)</td><td>+59.7%</td><td class="bad">−32.1%</td></tr>
-        <tr><td>Bootstrap p-value</td><td><b>0.13</b> — noise</td><td>0.66</td></tr>
-        <tr><td>Max drawdown</td><td>−38.8%</td><td class="bad">−64.6%</td></tr>
-        <tr><td>Buy &amp; hold, same window</td><td colspan="2" class="good">+793%</td></tr>
+        <tr><td data-i18n="t_total"></td><td>+59.7%</td><td class="bad">−32.1%</td></tr>
+        <tr><td data-i18n="t_pval"></td><td data-i18n="t_pval_g"></td><td>0.66</td></tr>
+        <tr><td data-i18n="t_dd"></td><td>−38.8%</td><td class="bad">−64.6%</td></tr>
+        <tr><td data-i18n="t_bh"></td><td colspan="2" class="good">+793%</td></tr>
       </tbody>
     </table></div>
-    <p style="font-size:15px;color:var(--muted)">The "best parameters" don't even replicate across timeframes — that's noise-mining, demonstrated. Full methodology and code are public: <a href="https://gist.github.com/rgarciarondon-netizen/f9294e20fa1f83a1e654633f1228c986">the audit engine</a>.</p>
+    <p style="font-size:15px;color:var(--muted)" data-i18n="proof_note"></p>
   </div>
 
-  <h2>What you get</h2>
+  <h2 data-i18n="get_h"></h2>
   <ul>
-    <li><b>Look-ahead / data-leakage check</b> — the #1 silent killer (we found it in our own bots first).</li>
-    <li><b>Statistical honesty</b> — bootstrap significance, deflated expectations, and the answer to "how many trades until this is distinguishable from luck?"</li>
-    <li><b>Real-cost re-run</b> — fees, slippage, funding. Most edges are smaller than their friction.</li>
-    <li><b>Robustness battery</b> — parameter grids, cross-timeframe replication, per-regime breakdown.</li>
-    <li><b>A written verdict per claim</b>, evidence attached. No vibes.</li>
+    <li data-i18n="get_1"></li>
+    <li data-i18n="get_2"></li>
+    <li data-i18n="get_3"></li>
+    <li data-i18n="get_4"></li>
+    <li data-i18n="get_5"></li>
   </ul>
 
-  <h2>Founders audit — $99</h2>
-  <p>First 10 audits at founders price (regular <s>$249</s>). You send your backtest (trade list or code); you get the full report in 48h. If we can't audit your format, you don't pay.</p>
-  <a class="cta" id="cta" href="#">Get your strategy audited — $99</a>
-  <div class="slots">10 founders slots · report in 48h · replications welcome</div>
+  <h2 data-i18n="offer_h"></h2>
+  <p data-i18n="offer_p"></p>
+  <a class="cta" id="cta" href="#" data-i18n="cta"></a>
+  <div class="slots" data-i18n="slots"></div>
 
   <h2>FAQ</h2>
-  <div class="card"><b>My backtest is profitable. Why audit it?</b><p>So was Supertrend's — until honest fills, real costs and a p-value looked at it. The cheapest time to find out is before your money does.</p></div>
-  <div class="card"><b>What do you need from me?</b><p>Either a trade list (CSV: entries, exits, timestamps) or your strategy rules/code. NDAs welcome; your strategy is never published.</p></div>
-  <div class="card"><b>What if the audit finds nothing wrong?</b><p>Then you get something rarer than a profitable backtest: one that survived a falsification attempt. That's the certificate.</p></div>
+  <div class="card"><b data-i18n="faq1_q"></b><p data-i18n="faq1_a"></p></div>
+  <div class="card"><b data-i18n="faq2_q"></b><p data-i18n="faq2_a"></p></div>
+  <div class="card"><b data-i18n="faq3_q"></b><p data-i18n="faq3_a"></p></div>
 
-  <p class="foot">Built by a systematic trader who spent months falsifying his own bots — and published the teardowns to prove the method. Contact: <a id="mail" href="#">email</a>.</p>
+  <p class="foot"><span data-i18n="foot"></span> <a id="mail" href="#" data-i18n="foot_mail"></a>.</p>
 </main>
 <script>
-  const mail = "mailto:" + CONTACT + "?subject=Founders%20audit";
+const GIST = "https://gist.github.com/rgarciarondon-netizen/f9294e20fa1f83a1e654633f1228c986";
+const I18N = {
+en: {
+  _title: "Your backtest is lying to you — Strategy Audit",
+  _desc: "Falsification-first audit of your trading strategy: look-ahead, overfitting, sample power, real costs. Verdicts with evidence in 48h.",
+  tag: "Falsification-first · evidence or it didn't happen",
+  h1: 'Your backtest is <span class="accent">lying</span> to you.<br>We prove it.',
+  sub: "A forensic audit of your strategy in 48h: look-ahead bias, overfitting, sample power, real costs. Every finding gets a verdict — <b>CONFIRMED / REFUTED / NOT VERIFIABLE</b> — with the evidence attached. The auditor itself publishes its calibrated false-positive rate.",
+  proof_h: "Proof: we audit famous strategies in public",
+  proof_intro: "<b>YouTube's \"Supertrend + EMA200\"</b> — 6.5 years of BTCUSDT, 356 trades, honest fills, real costs:",
+  t_metric: "Metric", t_gross: "Gross (zero fees)", t_net: "Net (0.24% RT)",
+  t_total: "Total (compounded)", t_pval: "Bootstrap p-value", t_pval_g: "<b>0.13</b> — noise",
+  t_dd: "Max drawdown", t_bh: "Buy & hold, same window",
+  proof_note: 'The "best parameters" don\'t even replicate across timeframes — that\'s noise-mining, demonstrated. Full methodology and code are public: <a href="'+GIST+'">the audit engine</a>.',
+  get_h: "What you get",
+  get_1: "<b>Look-ahead / data-leakage check</b> — the #1 silent killer (we found it in our own bots first).",
+  get_2: "<b>Statistical honesty</b> — bootstrap significance, deflated expectations, and the answer to \"how many trades until this is distinguishable from luck?\"",
+  get_3: "<b>Real-cost re-run</b> — fees, slippage, funding. Most edges are smaller than their friction.",
+  get_4: "<b>Robustness battery</b> — parameter grids, cross-timeframe replication, per-regime breakdown.",
+  get_5: "<b>A written verdict per claim</b>, evidence attached. No vibes.",
+  offer_h: "Founders audit — $99",
+  offer_p: "First 10 audits at founders price (regular <s>$249</s>). You send your backtest (trade list or code); you get the full report in 48h. If we can't audit your format, you don't pay.",
+  cta: "Get your strategy audited — $99",
+  slots: "10 founders slots · report in 48h · replications welcome",
+  faq1_q: "My backtest is profitable. Why audit it?",
+  faq1_a: "So was Supertrend's — until honest fills, real costs and a p-value looked at it. The cheapest time to find out is before your money does.",
+  faq2_q: "What do you need from me?",
+  faq2_a: "Either a trade list (CSV: entries, exits, timestamps) or your strategy rules/code. NDAs welcome; your strategy is never published.",
+  faq3_q: "What if the audit finds nothing wrong?",
+  faq3_a: "Then you get something rarer than a profitable backtest: one that survived a falsification attempt. That's the certificate.",
+  foot: "Built by a systematic trader who spent months falsifying his own bots — and published the teardowns to prove the method. Contact:",
+  foot_mail: "email",
+  _mailsub: "Founders audit", _mailbody: "I want a founders audit. My strategy format is: "
+},
+es: {
+  _title: "Tu backtest te está mintiendo — Auditoría de Estrategias",
+  _desc: "Auditoría de falsificación de tu estrategia de trading: look-ahead, overfitting, poder de muestra, costes reales. Veredictos con evidencia en 48h.",
+  tag: "Falsificación primero · evidencia o no ocurrió",
+  h1: 'Tu backtest te está <span class="accent">mintiendo</span>.<br>Te lo demostramos.',
+  sub: "Auditoría forense de tu estrategia en 48h: sesgo de look-ahead, overfitting, poder de muestra, costes reales. Cada hallazgo recibe un veredicto — <b>CONFIRMADO / REFUTADO / NO VERIFICABLE</b> — con la evidencia adjunta. El propio auditor publica su tasa de falsos positivos calibrada.",
+  proof_h: "Prueba: auditamos estrategias famosas en público",
+  proof_intro: "<b>La \"Supertrend + EMA200\" de YouTube</b> — 6.5 años de BTCUSDT, 356 trades, ejecución honesta, costes reales:",
+  t_metric: "Métrica", t_gross: "Bruto (sin comisiones)", t_net: "Neto (0.24% i/v)",
+  t_total: "Total (compuesto)", t_pval: "p-valor (bootstrap)", t_pval_g: "<b>0.13</b> — ruido",
+  t_dd: "Drawdown máximo", t_bh: "Comprar y holdear, mismo período",
+  proof_note: 'Los "mejores parámetros" ni siquiera se replican entre timeframes — eso es minería de ruido, demostrada. Metodología y código públicos: <a href="'+GIST+'">el motor de auditoría</a>.',
+  get_h: "Qué recibes",
+  get_1: "<b>Chequeo de look-ahead / fuga de datos</b> — el asesino silencioso #1 (lo encontramos primero en nuestros propios bots).",
+  get_2: "<b>Honestidad estadística</b> — significancia por bootstrap, expectativas defladas, y la respuesta a \"¿cuántos trades hacen falta para distinguir esto de la suerte?\"",
+  get_3: "<b>Re-cálculo con costes reales</b> — comisiones, slippage, funding. La mayoría de los edges son más pequeños que su fricción.",
+  get_4: "<b>Batería de robustez</b> — grids de parámetros, réplica entre timeframes, desglose por régimen.",
+  get_5: "<b>Un veredicto escrito por afirmación</b>, con evidencia adjunta. Sin sensaciones.",
+  offer_h: "Auditoría fundadores — $99",
+  offer_p: "Primeras 10 auditorías a precio fundadores (normal <s>$249</s>). Envías tu backtest (lista de trades o código); recibes el informe completo en 48h. Si no podemos auditar tu formato, no pagas.",
+  cta: "Audita tu estrategia — $99",
+  slots: "10 cupos fundadores · informe en 48h · réplicas bienvenidas",
+  faq1_q: "Mi backtest es rentable. ¿Para qué auditarlo?",
+  faq1_a: "El de Supertrend también lo era — hasta que la ejecución honesta, los costes reales y un p-valor lo miraron. El momento más barato para descubrirlo es antes que tu dinero.",
+  faq2_q: "¿Qué necesitas de mí?",
+  faq2_a: "Una lista de trades (CSV: entradas, salidas, timestamps) o las reglas/código de tu estrategia. NDAs bienvenidos; tu estrategia jamás se publica.",
+  faq3_q: "¿Y si la auditoría no encuentra nada malo?",
+  faq3_a: "Entonces obtienes algo más raro que un backtest rentable: uno que sobrevivió un intento de falsificación. Ese es el certificado.",
+  foot: "Construido por un trader sistemático que pasó meses falsificando sus propios bots — y publicó los teardowns para demostrar el método. Contacto:",
+  foot_mail: "email",
+  _mailsub: "Auditoría fundadores", _mailbody: "Quiero una auditoría fundadores. El formato de mi estrategia es: "
+}};
+
+let lang = localStorage.getItem("lang") ||
+           ((navigator.language || "en").toLowerCase().startsWith("es") ? "es" : "en");
+
+function render() {
+  const t = I18N[lang];
+  document.documentElement.lang = lang;
+  document.title = t._title;
+  document.querySelector('meta[name="description"]').content = t._desc;
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const v = t[el.dataset.i18n];
+    if (v !== undefined) el.innerHTML = v;
+  });
+  document.getElementById("langbtn").textContent = lang === "en" ? "ES" : "EN";
+  const mail = "mailto:" + CONTACT + "?subject=" + encodeURIComponent(t._mailsub);
   document.getElementById("mail").href = mail;
-  const cta = document.getElementById("cta");
-  cta.href = PAY_LINK || (mail + "&body=I%20want%20a%20founders%20audit.%20My%20strategy%20format%20is%3A%20");
+  document.getElementById("cta").href =
+    PAY_LINK || (mail + "&body=" + encodeURIComponent(t._mailbody));
+}
+function toggleLang() {
+  lang = lang === "en" ? "es" : "en";
+  localStorage.setItem("lang", lang);
+  render();
+}
+render();
 </script>
 </body>
 </html>
