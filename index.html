@@ -48,8 +48,15 @@
   h1 .accent{color:var(--blue)}
   h2{font:800 24px "Archivo";letter-spacing:-.01em;margin:0 0 14px}
   .sub{color:var(--steel);font-size:19px;margin:20px 0 0;max-width:62ch}
-  .creed{font:800 clamp(15px,1.85vw,21px)/1.4 "Archivo";color:var(--blue);margin:30px 0 0;text-wrap:balance}
-  @media(min-width:760px){.creed{white-space:nowrap}}
+  /* banda de declaración: a sangre completa, centrada, dos líneas con jerarquía */
+  body{overflow-x:hidden}
+  .creedband{width:100vw;margin-left:calc(50% - 50vw);background:var(--ink);
+    padding:58px 24px;margin-top:56px;text-align:center}
+  @media(prefers-color-scheme:dark){.creedband{background:#000;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}}
+  .creed1{font:700 clamp(17px,2.1vw,26px)/1.3 "Archivo";color:var(--paper);opacity:.72;text-wrap:balance}
+  @media(prefers-color-scheme:dark){.creed1{color:var(--ink)}}
+  .creed2{font:900 clamp(21px,2.9vw,38px)/1.2 "Archivo";letter-spacing:-.015em;color:var(--blue);
+    margin-top:10px;text-wrap:balance}
 
   section{margin-top:72px}
 
@@ -145,7 +152,10 @@
       <div class="chip good"><b>+793%</b><span data-i18n="c4"></span></div>
     </div>
   </div>
-  <p class="creed" data-i18n="creed"></p>
+  <div class="creedband">
+    <p class="creed1" data-i18n="creed1"></p>
+    <p class="creed2" data-i18n="creed2"></p>
+  </div>
 
   <section>
     <div class="exhibit">
@@ -242,7 +252,8 @@ en: {
   eyebrow: "Independent backtest audits · falsification-first",
   h1: 'Your backtest is <span class="accent">lying</span> to you. We prove it.',
   sub: "A forensic audit of your strategy in 48h: look-ahead bias, overfitting, sample power, real costs. Every finding gets a verdict — CONFIRMED / REFUTED / NOT VERIFIABLE — with the evidence attached.",
-  creed: "We don't sell you strategies — that's why we can tell you the truth about yours.",
+  creed1: "We don't sell you strategies —",
+  creed2: "that's why we can tell you the truth about yours.",
   c1: "trades audited", c2: "gross significance — noise", c3: "net, after real costs", c4: "buy & hold, same window",
   exlabel: "EXHIBIT A · CASE 2026-ST-01",
   extitle: "YouTube's \"Supertrend + EMA200\" — 6.5 years of BTCUSDT, honest fills, real costs. Log scale, indexed to 100.",
@@ -285,7 +296,8 @@ es: {
   eyebrow: "Auditorías independientes de backtests · falsificación primero",
   h1: 'Tu backtest te está <span class="accent">mintiendo</span>. Te lo demostramos.',
   sub: "Auditoría forense de tu estrategia en 48h: sesgo de look-ahead, overfitting, poder de muestra, costes reales. Cada hallazgo recibe un veredicto — CONFIRMADO / REFUTADO / NO VERIFICABLE — con la evidencia adjunta.",
-  creed: "No te vendemos la estrategia — por eso podemos decirte la verdad sobre la tuya.",
+  creed1: "No te vendemos la estrategia —",
+  creed2: "por eso podemos decirte la verdad sobre la tuya.",
   c1: "trades auditados", c2: "significancia bruta — ruido", c3: "neto, con costes reales", c4: "comprar y holdear, mismo período",
   exlabel: "PRUEBA A · CASO 2026-ST-01",
   extitle: "La \"Supertrend + EMA200\" de YouTube — 6.5 años de BTCUSDT, ejecución honesta, costes reales. Escala log, indexado a 100.",
