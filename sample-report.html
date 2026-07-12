@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sample Audit Report — BacktestAudit</title>
+<meta name="description" content="A complete BacktestAudit sample report: scores, verdicts with evidence, declared assumptions, full reproducibility.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+  :root{--bg:#fff;--fg:#111;--muted:#555;--line:#e4e4e4;--accent:#0a6cff;--card:#f7f8fa;--bad:#c0392b;--good:#1e8e3e}
+  @media(prefers-color-scheme:dark){:root{--bg:#101214;--fg:#eceff1;--muted:#9aa4ad;--line:#2b3136;--accent:#4d9aff;--card:#1a1e22;--bad:#ff7a68;--good:#5dc97a}}
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  main{max-width:760px;margin:0 auto;padding:40px 20px 80px}
+  h1{font-size:28px;letter-spacing:-.01em;margin:6px 0}
+  h2{font-size:20px;margin:36px 0 10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  h3{font-size:17px;margin:22px 0 6px}
+  p{margin:10px 0}
+  .brand{font-weight:800;font-size:17px}.brand .accent{color:var(--accent)}
+  .meta{color:var(--muted);font-size:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:14px 0}
+  table{border-collapse:collapse;width:100%;font-size:14.5px;margin:10px 0}
+  th,td{padding:7px 10px;text-align:right;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{color:var(--muted);font-weight:600}
+  .tablewrap{overflow-x:auto}
+  .bad{color:var(--bad);font-weight:700}.good{color:var(--good);font-weight:700}
+  .verdict{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.4px;border-radius:6px;padding:2px 8px;color:#fff}
+  .v-conf{background:var(--bad)}.v-nr{background:var(--good)}
+  .score{font-size:38px;font-weight:800}
+  .back{color:var(--accent);text-decoration:none;font-weight:600}
+  .note{border-left:4px solid var(--accent);padding:8px 14px;background:var(--card);border-radius:0 8px 8px 0;margin:16px 0}
+  ul{padding-left:20px}li{margin:6px 0}
+  code{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:0 5px;font-size:13px}
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="index.html">← BacktestAudit</a>
+  <p class="brand" style="margin-top:14px">Backtest<span class="accent">Audit</span> · SAMPLE AUDIT REPORT</p>
+  <h1>Two crypto strategies, six years of data, one honest answer</h1>
+  <p class="meta">Client: [redacted]* · Strategies: A (4H EMA-cross trend system) and B (1H RSI + Bollinger mean-reversion) · BTCUSDT / ETHUSDT / SOLUSDT · 2020-01 → 2026-07 (6.4y) · Engine: battery v2 · Report date: 2026-07-12</p>
+
+  <h2>Score (0–100, formula published below)</h2>
+  <div class="card"><div class="tablewrap"><table>
+    <thead><tr><th></th><th>BTCUSDT</th><th>ETHUSDT</th><th>SOLUSDT</th><th>Overall</th></tr></thead>
+    <tbody>
+      <tr><td><b>Strategy A</b> (trend)</td><td>4.3</td><td>9.0</td><td>37.7</td><td class="bad">17 — REFUTED</td></tr>
+      <tr><td><b>Strategy B</b> (mean-rev)</td><td>0.0</td><td>0.0</td><td>2.9</td><td class="bad">1 — REFUTED</td></tr>
+    </tbody>
+  </table></div>
+  <p><b>Global verdict:</b> neither strategy has an exploitable edge. The value in this client's system lives in its execution and risk infrastructure — not in the signal.</p></div>
+
+  <h2>Findings</h2>
+
+  <h3>F1 — Strategy B has no edge even before costs <span class="verdict v-conf">CONFIRMED</span></h3>
+  <p>Gross: +3.1% (p=0.41), −4.9% (p=0.51), −15.5% (p=0.63) across the three symbols, 176–359 trades each. Net: −45% to −56%, PF 0.70–0.76. <b>Noise test: 0–0.7% of 150 noise-perturbed series stay profitable</b> — the signal <i>is</i> the noise. Vs-random: percentiles 30–43 (worse than the median of random entries). Deflated Sharpe ≈ 0. Nothing here survives to be optimized: buying oversold on a fat-tailed asset is conceptually broken, not mistuned.</p>
+
+  <h3>F2 — Strategy A on SOL: the "edge" that was beta <span class="verdict v-conf">CONFIRMED</span></h3>
+  <p>The teaching case. At first glance it looks legitimate: +547.7% gross, <b>p=0.025 (significant at 5%)</b>, +57.9% NET, PF 1.13, noise test 72.7% profitable. Four tests dismantle it:</p>
+  <ul>
+    <li><b>Vs-random percentile 48</b>: it does NOT beat 500 strategies of <i>random</i> entries with matched frequency and holding time. Any long exposure to SOL made money — SOL returned <b>+2,596%</b> in the window. The strategy harvests the asset's drift, not a signal.</li>
+    <li><b>Deflated Sharpe 0.61</b> (&lt;0.95): adjusted for the SL/TP design trials, significance evaporates.</li>
+    <li><b>MinTRL: needs 974 trades, has 587</b> — sample insufficient even ignoring the above.</li>
+    <li><b>Max drawdown −87%</b>, and buy &amp; hold beats it 45×. Nobody survives that drawdown to collect the +58%.</li>
+  </ul>
+  <p class="note">A p-value alone (0.025) would have <i>approved</i> this strategy. The vs-random test is what exposes beta dressed as alpha. This is why the battery has more than one blade.</p>
+
+  <h3>F3 — Costs eat all of Strategy A's gross <span class="verdict v-conf">CONFIRMED</span></h3>
+  <p>BTC: +153% gross → <b>−45% net</b> (0.24% round trip × 639 trades). ETH: +274% → −9.7%. The per-trade gross edge is smaller than the friction. Net MinTRL on BTC: <b>6,692,603 trades</b> — the absurd number is the formula working correctly: with net SR ≈ 0, no finite sample will ever validate it.</p>
+
+  <h3>F4 — The client's live track record is non-informative <span class="verdict v-conf">CONFIRMED</span></h3>
+  <p>~40 live closes accumulated. At any plausible Sharpe, MinTRL demands hundreds to thousands. <b>Even if the live PnL were positive, 40 trades cannot establish anything</b> — live data of this size validates infrastructure, not signal.</p>
+
+  <h3>F5 — What survives the audit <span class="verdict v-nr">NOT REFUTED</span></h3>
+  <p>The client's risk/execution layer (drawdown and losing-streak breakers, per-symbol cooldowns, position caps, boot-time reconciliation, feed self-healing) is outside the scope of this statistical battery and has real event-based validations on record. That layer is the asset.</p>
+
+  <h2>Declared assumptions (attack them)</h2>
+  <p>One position per symbol (serializes signals; the live system's caps/cooldowns further <i>reduce</i> exposure → this port is generous). No streak-based risk cuts or breakers (also generous). Costs: 0.10% taker + 0.02% slippage per side. Intrabar SL/TP tie counts as a loss. Multi-timeframe confirmation mapped to the last closed bar. Signal on close → entry at next open. Long-only spot.</p>
+
+  <h2>Reproducibility</h2>
+  <p>Engine version, RNG seeds (battery 7, noise 1000+k, bootstrap 42), and md5 of all six datasets are recorded in the full report package. Data: public Binance klines — anyone can re-pull and re-run. Strategy rules were ported from the client's actual code, not from a description.</p>
+
+  <h2>Score formula (published, no black box)</h2>
+  <p>Gross significance (p≤0.05, linear) 25 · Net profit factor (1.0→1.5) 20 · Noise test (&gt;50% profitable) 15 · Vs-random (percentile&gt;95) 15 · Sample vs MinTRL 15 · Yearly consistency 10.</p>
+
+  <h2>Battery applied (v2)</h2>
+  <p>Honest fills (next-bar open, SL-first ties) · real costs · 10k bootstrap · <b>MinTRL</b> and <b>Deflated Sharpe</b> (Bailey &amp; López de Prado) · <b>noise test, 150 series with signals recomputed</b> · <b>vs-random, 500 matched strategies</b> · autocorrelation-adjusted Sharpe (Lo) · SL/TP grid · per-year breakdown.</p>
+
+  <p class="note">*The redaction is a formality we owe every client. This particular client waived it: <b>these are our own trading bots.</b> We audited them with the same knife we sell — and published the result. That's the standard your strategy gets.</p>
+
+  <p><a class="back" href="index.html">← Get your strategy audited</a></p>
+</main>
+</body>
+</html>
