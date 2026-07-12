@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Your backtest is lying to you — Strategy Audit</title>
+<title>BacktestAudit — Your backtest is lying to you</title>
 <meta name="description" content="Falsification-first audit of your trading strategy: look-ahead, overfitting, sample power, real costs. Verdicts with evidence in 48h.">
 <!-- ══ CONFIG: edita estas 2 líneas y nada más ══ -->
 <script>
@@ -35,14 +35,16 @@
   .foot{margin-top:64px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
   a{color:var(--accent)}
   .tag{display:inline-block;font-size:13px;border:1px solid var(--line);border-radius:99px;padding:2px 12px;color:var(--muted);margin-bottom:18px}
-  .langbar{display:flex;justify-content:flex-end;margin-bottom:8px}
+  .langbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .brand{font-weight:800;font-size:17px;letter-spacing:-.01em}
+  .brand .accent{font-weight:800}
   .langbtn{background:none;border:1px solid var(--line);border-radius:99px;color:var(--muted);font:600 13px system-ui;padding:4px 12px;cursor:pointer}
   .langbtn:hover{color:var(--accent);border-color:var(--accent)}
 </style>
 </head>
 <body>
 <main>
-  <div class="langbar"><button class="langbtn" id="langbtn" onclick="toggleLang()">ES</button></div>
+  <div class="langbar"><span class="brand">Backtest<span class="accent">Audit</span></span><button class="langbtn" id="langbtn" onclick="toggleLang()">ES</button></div>
   <span class="tag" data-i18n="tag"></span>
   <h1 data-i18n="h1"></h1>
   <p class="sub" data-i18n="sub"></p>
@@ -87,7 +89,7 @@
 const GIST = "https://gist.github.com/rgarciarondon-netizen/f9294e20fa1f83a1e654633f1228c986";
 const I18N = {
 en: {
-  _title: "Your backtest is lying to you — Strategy Audit",
+  _title: "BacktestAudit — Your backtest is lying to you",
   _desc: "Falsification-first audit of your trading strategy: look-ahead, overfitting, sample power, real costs. Verdicts with evidence in 48h.",
   tag: "Falsification-first · evidence or it didn't happen",
   h1: 'Your backtest is <span class="accent">lying</span> to you.<br>We prove it.',
@@ -114,12 +116,12 @@ en: {
   faq2_a: "Either a trade list (CSV: entries, exits, timestamps) or your strategy rules/code. NDAs welcome; your strategy is never published.",
   faq3_q: "What if the audit finds nothing wrong?",
   faq3_a: "Then you get something rarer than a profitable backtest: one that survived a falsification attempt. That's the certificate.",
-  foot: "Built by a systematic trader who spent months falsifying his own bots — and published the teardowns to prove the method. Contact:",
+  foot: "<b>BacktestAudit</b> — built by a systematic trader who spent months falsifying his own bots, and published the teardowns to prove the method. Contact:",
   foot_mail: "email",
   _mailsub: "Founders audit", _mailbody: "I want a founders audit. My strategy format is: "
 },
 es: {
-  _title: "Tu backtest te está mintiendo — Auditoría de Estrategias",
+  _title: "BacktestAudit — Tu backtest te está mintiendo",
   _desc: "Auditoría de falsificación de tu estrategia de trading: look-ahead, overfitting, poder de muestra, costes reales. Veredictos con evidencia en 48h.",
   tag: "Falsificación primero · evidencia o no ocurrió",
   h1: 'Tu backtest te está <span class="accent">mintiendo</span>.<br>Te lo demostramos.',
@@ -146,7 +148,7 @@ es: {
   faq2_a: "Una lista de trades (CSV: entradas, salidas, timestamps) o las reglas/código de tu estrategia. NDAs bienvenidos; tu estrategia jamás se publica.",
   faq3_q: "¿Y si la auditoría no encuentra nada malo?",
   faq3_a: "Entonces obtienes algo más raro que un backtest rentable: uno que sobrevivió un intento de falsificación. Ese es el certificado.",
-  foot: "Construido por un trader sistemático que pasó meses falsificando sus propios bots — y publicó los teardowns para demostrar el método. Contacto:",
+  foot: "<b>BacktestAudit</b> — construido por un trader sistemático que pasó meses falsificando sus propios bots, y publicó los teardowns para demostrar el método. Contacto:",
   foot_mail: "email",
   _mailsub: "Auditoría fundadores", _mailbody: "Quiero una auditoría fundadores. El formato de mi estrategia es: "
 }};
