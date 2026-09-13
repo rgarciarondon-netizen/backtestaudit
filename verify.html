@@ -62,6 +62,15 @@
   <div class="card" id="CHAN-07"><span class="badge">VERIFIED ✓</span>
     <dl><dt>Case</dt><dd>2026-CHAN-07 · "Chanlun 三买 Third Buy" (China) · REFUTED (repaint caught by our own detector) · <a href="certificates.html#CHAN-07">certificate</a></dd>
     <dt>SHA-256 · results</dt><dd>05cabcf414fed69ca15ddf02a86040c0b4cab9a4ed96a4f76d4f5157d0c23154</dd></dl></div>
+  <div class="card" id="FLOW-09"><span class="badge">VERIFIED ✓</span>
+    <dl><dt>Case</dt><dd>2026-FLOW-09 · "Order-flow continuation (taker-buy CVD proxy)" · KILLED at the pre-registered 12h horizon; the post-hoc 24h lead (+18 bp, t 2.4) FAILED to replicate on 5 virgin pairs (−3 bp) · <a href="registry/FLOW-09_orderflow_20260913.tgz">pre-registrations + scripts + tables</a></dd>
+    <dt>SHA-256 · bundle</dt><dd>dae313cf58c9feb874d023ba51a4f940818d6c18ac074deb01196abc09d3a7fd</dd></dl></div>
+  <div class="card" id="COOL-10"><span class="badge">VERIFIED ✓</span>
+    <dl><dt>Case</dt><dd>2026-COOL-10 · "24h per-symbol cooldown after a loss" (rule placebo test) · rule sits at percentile 44 of 100 random cooldowns on 8 pairs → indistinguishable from trading less · <a href="registry/COOL-10_cooldown_placebo_20260913.tgz">pre-registrations + scripts + results</a></dd>
+    <dt>SHA-256 · bundle</dt><dd>f31c09d1f4041ceabbef2de4fd4a6eaea3120dd14db22e900f37eaf99e196451</dd></dl></div>
+  <div class="card" id="ESC-11"><span class="badge">OPEN · verdict pending</span>
+    <dl><dt>Case</dt><dd>2026-ESC-11 · "Remove the ×1.5 risk escalator on top-confidence signals (bot V1)" · live single-change experiment started 2026-09-13 14:57 UTC; criterion fixed before any result (25 signals, PnL ≤ 0 → stays removed, &gt; 0 → restored) · <a href="registry/ESC-11_prerregistro_20260913.md">pre-registration</a></dd>
+    <dt>SHA-256 · pre-registration</dt><dd>b50184b3548ae7e63ab942baf2d19e92f89157f74ff413743d178b2a3ccd6614</dd></dl></div>
 
   <p class="muted">Client reports appear here as anonymous IDs with hashes only — the content stays private; the fingerprint proves authenticity. Rigor applied to every entry: strategy rules taken from the client's actual code or trade log (never from a description), execution re-simulated honestly, every statistical claim reproducible with published seeds.</p>
 </main>
